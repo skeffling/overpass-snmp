@@ -1,0 +1,104 @@
+-- OVERPASS-MIB: MIB for Overpass API server monitoring
+--
+-- This MIB defines objects for monitoring Overpass API servers.
+-- Install to /usr/share/snmp/mibs/ and configure snmpd with pass_persist.
+--
+-- Enterprise OID: .1.3.6.1.4.1.99999 (placeholder - replace with your own)
+-- To get an official enterprise number, register at:
+-- https://www.iana.org/assignments/enterprise-numbers/
+
+OVERPASS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, Gauge32, enterprises
+        FROM SNMPv2-SMI
+    DisplayString
+        FROM SNMPv2-TC
+    MODULE-COMPLIANCE, OBJECT-GROUP
+        FROM SNMPv2-CONF;
+
+overpassMIB MODULE-IDENTITY
+    LAST-UPDATED "202601160000Z"
+    ORGANIZATION "Overpass SNMP Monitor"
+    CONTACT-INFO "https://github.com/skeffling/overpass-snmp"
+    DESCRIPTION  "MIB for monitoring Overpass API server statistics"
+    REVISION     "202601160000Z"
+    DESCRIPTION  "Initial version"
+    ::= { enterprises 99999 }
+
+-- Object Identifiers
+overpassObjects OBJECT IDENTIFIER ::= { overpassMIB 1 }
+overpassConformance OBJECT IDENTIFIER ::= { overpassMIB 2 }
+
+-- Objects
+
+overpassSlotsAvailable OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Number of query slots currently available"
+    ::= { overpassObjects 1 }
+
+overpassSlotsTotal OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Total number of query slots (rate limit)"
+    ::= { overpassObjects 2 }
+
+overpassActive OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Number of currently running queries"
+    ::= { overpassObjects 3 }
+
+overpassLatency OBJECT-TYPE
+    SYNTAX      Gauge32
+    UNITS       "milliseconds"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Latency to fetch server status in milliseconds"
+    ::= { overpassObjects 4 }
+
+overpassAge OBJECT-TYPE
+    SYNTAX      Gauge32
+    UNITS       "minutes"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Age of OSM data in minutes"
+    ::= { overpassObjects 5 }
+
+overpassVersion OBJECT-TYPE
+    SYNTAX      DisplayString (SIZE (0..255))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Overpass API version string"
+    ::= { overpassObjects 6 }
+
+-- Conformance
+
+overpassCompliances OBJECT IDENTIFIER ::= { overpassConformance 1 }
+overpassGroups OBJECT IDENTIFIER ::= { overpassConformance 2 }
+
+overpassCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION "Compliance statement for OVERPASS-MIB"
+    MODULE
+        MANDATORY-GROUPS { overpassObjectsGroup }
+    ::= { overpassCompliances 1 }
+
+overpassObjectsGroup OBJECT-GROUP
+    OBJECTS {
+        overpassSlotsAvailable,
+        overpassSlotsTotal,
+        overpassActive,
+        overpassLatency,
+        overpassAge,
+        overpassVersion
+    }
+    STATUS current
+    DESCRIPTION "All Overpass monitoring objects"
+    ::= { overpassGroups 1 }
+
+END
