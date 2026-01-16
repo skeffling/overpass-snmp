@@ -31,11 +31,11 @@ This tool consists of two bash scripts:
 
 ## Installation
 
-### 1. Install scripts
+### 1. Download and install scripts
 
 ```bash
-sudo cp overpass-stats.sh /usr/local/bin/
-sudo cp overpass-snmp.sh /usr/local/bin/
+sudo curl -o /usr/local/bin/overpass-stats.sh https://raw.githubusercontent.com/skeffling/overpass-snmp/main/overpass-stats.sh
+sudo curl -o /usr/local/bin/overpass-snmp.sh https://raw.githubusercontent.com/skeffling/overpass-snmp/main/overpass-snmp.sh
 sudo chmod +x /usr/local/bin/overpass-stats.sh
 sudo chmod +x /usr/local/bin/overpass-snmp.sh
 ```
