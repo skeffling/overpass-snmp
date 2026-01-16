@@ -123,6 +123,38 @@ snmpwalk -v2c -c public localhost NET-SNMP-EXTEND-MIB::nsExtendOutput1Line
 snmpget -v2c -c public localhost 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."overpass-slots"'
 ```
 
+## SNMP OIDs
+
+The SNMP extend OIDs follow the NET-SNMP-EXTEND-MIB format. Use these OIDs when configuring your monitoring/graphing software:
+
+**Base OID:** `.1.3.6.1.4.1.8072.1.3.2.3.1.1` (nsExtendOutput1Line)
+
+| Extend Name | Full OID |
+|-------------|----------|
+| overpass-slots | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.14.111.118.101.114.112.97.115.115.45.115.108.111.116.115` |
+| overpass-slots-avail | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.20.111.118.101.114.112.97.115.115.45.115.108.111.116.115.45.97.118.97.105.108` |
+| overpass-slots-total | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.20.111.118.101.114.112.97.115.115.45.115.108.111.116.115.45.116.111.116.97.108` |
+| overpass-active | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.15.111.118.101.114.112.97.115.115.45.97.99.116.105.118.101` |
+| overpass-latency | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.16.111.118.101.114.112.97.115.115.45.108.97.116.101.110.99.121` |
+| overpass-age | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.12.111.118.101.114.112.97.115.115.45.97.103.101` |
+| overpass-version | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.16.111.118.101.114.112.97.115.115.45.118.101.114.115.105.111.110` |
+
+**How OIDs are constructed:**
+
+The OID suffix is the extend name encoded as: `<length>.<ascii values of each character>`
+
+For example, `overpass-age` (12 characters) becomes:
+```
+12.111.118.101.114.112.97.115.115.45.97.103.101
+   o   v   e   r   p   a  s   s   -  a  g   e
+```
+
+**Discover OIDs dynamically:**
+
+```bash
+snmpwalk -v2c -c public localhost .1.3.6.1.4.1.8072.1.3.2.3.1.1
+```
+
 ## Configuration Options
 
 Environment variables for `overpass-stats.sh`:
