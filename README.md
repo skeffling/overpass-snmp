@@ -11,14 +11,20 @@ This tool consists of two bash scripts:
 
 ## Available Statistics
 
+### Numeric (for graphing in LibreNMS, etc.)
+
 | Stat Name | Type | Description |
 |-----------|------|-------------|
-| `slots` | string | Slots available (e.g., "2/4") |
-| `slots_available` | integer | Available query slots |
-| `slots_total` | integer | Total query slots |
-| `active` | integer | Currently running queries |
-| `latency` | integer | Status fetch latency (ms) |
-| `age` | integer | Data age in minutes |
+| `slots_available` | gauge | Available query slots |
+| `slots_total` | gauge | Total query slots |
+| `active` | gauge | Currently running queries |
+| `latency` | gauge | Status fetch latency (ms) |
+| `age` | gauge | Data age in minutes |
+
+### Informational (string values)
+
+| Stat Name | Type | Description |
+|-----------|------|-------------|
 | `version` | string | Overpass API version |
 | `timestamp` | string | Data timestamp (ISO format) |
 | `last_update` | string | When stats were last fetched |
@@ -80,7 +86,6 @@ Or with a custom URL:
 Add to `/etc/snmp/snmpd.conf`:
 
 ```
-extend overpass-slots         /usr/local/bin/overpass-snmp.sh slots
 extend overpass-slots-avail   /usr/local/bin/overpass-snmp.sh slots_available
 extend overpass-slots-total   /usr/local/bin/overpass-snmp.sh slots_total
 extend overpass-active        /usr/local/bin/overpass-snmp.sh active
@@ -120,7 +125,7 @@ cat /var/cache/overpass-snmp/slots
 snmpwalk -v2c -c public localhost NET-SNMP-EXTEND-MIB::nsExtendOutput1Line
 
 # Get a specific stat
-snmpget -v2c -c public localhost 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."overpass-slots"'
+snmpget -v2c -c public localhost 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."overpass-slots-avail"'
 ```
 
 ## SNMP OIDs
@@ -131,7 +136,6 @@ The SNMP extend OIDs follow the NET-SNMP-EXTEND-MIB format. Use these OIDs when 
 
 | Extend Name | Full OID |
 |-------------|----------|
-| overpass-slots | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.14.111.118.101.114.112.97.115.115.45.115.108.111.116.115` |
 | overpass-slots-avail | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.20.111.118.101.114.112.97.115.115.45.115.108.111.116.115.45.97.118.97.105.108` |
 | overpass-slots-total | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.20.111.118.101.114.112.97.115.115.45.115.108.111.116.115.45.116.111.116.97.108` |
 | overpass-active | `.1.3.6.1.4.1.8072.1.3.2.3.1.1.15.111.118.101.114.112.97.115.115.45.97.99.116.105.118.101` |

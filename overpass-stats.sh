@@ -76,10 +76,9 @@ fetch_status() {
         fi
     done <<< "$status_response"
 
-    # Write stats
+    # Write stats (integers only for SNMP compatibility)
     write_stat "slots_available" "$slots_available"
     write_stat "slots_total" "$slots_total"
-    write_stat "slots" "${slots_available}/${slots_total}"
     write_stat "active" "$active_queries"
     write_stat "latency" "$latency"
 

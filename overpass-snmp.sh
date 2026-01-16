@@ -4,13 +4,14 @@
 #
 # Usage: overpass-snmp.sh <stat_name>
 #
-# Available stats:
-#   slots           - Slots available (e.g., "2/4")
+# Available stats (numeric - for graphing):
 #   slots_available - Available slots (integer)
 #   slots_total     - Total slots (integer)
 #   active          - Running query count (integer)
 #   latency         - Last fetch latency in ms (integer)
 #   age             - Data age in minutes (integer)
+#
+# Informational (string):
 #   version         - Overpass API version string
 #   timestamp       - Data timestamp (ISO format)
 #   last_update     - When stats were last fetched
