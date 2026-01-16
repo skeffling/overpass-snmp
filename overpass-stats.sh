@@ -20,6 +20,11 @@ OVERPASS_URL="${OVERPASS_URL:-http://localhost}"
 CACHE_DIR="${CACHE_DIR:-/var/cache/overpass-snmp}"
 TIMEOUT="${TIMEOUT:-10}"
 
+# Ensure URL has protocol
+if [[ ! "$OVERPASS_URL" =~ ^https?:// ]]; then
+    OVERPASS_URL="https://$OVERPASS_URL"
+fi
+
 # Create cache directory if it doesn't exist
 mkdir -p "$CACHE_DIR"
 
@@ -35,9 +40,17 @@ fetch_status() {
     local start_time end_time latency
     start_time=$(date +%s%3N)
 
-    local status_response
-    if ! status_response=$(curl -s --max-time "$TIMEOUT" "$OVERPASS_URL/api/status" 2>/dev/null); then
-        write_stat "error" "Failed to fetch status"
+    local status_response curl_exit
+    status_response=$(curl -sf --max-time "$TIMEOUT" "$OVERPASS_URL/api/status" 2>&1) || curl_exit=$?
+
+    if [[ -n "$curl_exit" ]]; then
+        write_stat "error" "Failed to fetch status (curl exit $curl_exit): $status_response"
+        return 1
+    fi
+
+    # Check we got valid response
+    if [[ -z "$status_response" || ! "$status_response" =~ "Connected as" ]]; then
+        write_stat "error" "Invalid status response from $OVERPASS_URL"
         return 1
     fi
 
