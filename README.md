@@ -37,7 +37,13 @@ This tool consists of two bash scripts:
 
 ## Installation
 
-### 1. Download and install scripts
+### 1. Install dependencies
+
+```bash
+sudo apt install curl jq
+```
+
+### 2. Download and install scripts
 
 ```bash
 sudo curl -o /usr/local/bin/overpass-stats.sh https://raw.githubusercontent.com/skeffling/overpass-snmp/main/overpass-stats.sh
@@ -46,14 +52,14 @@ sudo chmod +x /usr/local/bin/overpass-stats.sh
 sudo chmod +x /usr/local/bin/overpass-snmp.sh
 ```
 
-### 2. Create cache directory
+### 3. Create cache directory
 
 ```bash
 sudo mkdir -p /var/cache/overpass-snmp
 sudo chown $USER /var/cache/overpass-snmp
 ```
 
-### 3. Configure the server URL
+### 4. Configure the server URL
 
 Edit `/usr/local/bin/overpass-stats.sh` and change the `OVERPASS_URL` variable:
 
@@ -63,7 +69,7 @@ OVERPASS_URL="${OVERPASS_URL:-http://localhost}"  # Change to your server
 
 Or set it via environment variable in cron.
 
-### 4. Add cron job
+### 5. Add cron job
 
 ```bash
 crontab -e
@@ -81,7 +87,7 @@ Or with a custom URL:
 * * * * * OVERPASS_URL=http://your-server /usr/local/bin/overpass-stats.sh
 ```
 
-### 5. Configure SNMP
+### 6. Configure SNMP
 
 Add to `/etc/snmp/snmpd.conf`:
 
@@ -177,6 +183,7 @@ Environment variables for `overpass-stats.sh`:
 
 ### Stats show "U" (unknown)
 
+- Ensure jq is installed: `jq --version` (if not, run `sudo apt install jq`)
 - Check if the cron job is running: `cat /var/cache/overpass-snmp/last_update`
 - Check if curl can reach the server: `curl -s http://localhost/api/status`
 - Check for errors: `cat /var/cache/overpass-snmp/error`
