@@ -230,6 +230,51 @@ Environment variables for `overpass-stats.sh`:
 | `CACHE_DIR` | `/var/cache/overpass-snmp` | Cache directory |
 | `TIMEOUT` | `10` | Request timeout in seconds |
 
+## LibreNMS Integration
+
+LibreNMS can monitor these SNMP values, but requires some configuration to display units correctly.
+
+### Adding Custom OIDs in LibreNMS
+
+The easiest way is to add Custom OIDs via the LibreNMS web interface:
+
+1. Go to **Device → Health → Custom OID** (or **Device → Edit → Modules → Custom OID**)
+2. Click **Add Custom OID**
+3. Add each metric with these settings:
+
+| OID | Name | Unit | Divisor |
+|-----|------|------|---------|
+| `.1.3.6.1.4.1.99999.1.1` | Overpass Slots Available | slots | 1 |
+| `.1.3.6.1.4.1.99999.1.2` | Overpass Slots Total | slots | 1 |
+| `.1.3.6.1.4.1.99999.1.3` | Overpass Active Queries | queries | 1 |
+| `.1.3.6.1.4.1.99999.1.4` | Overpass Latency | ms | 1 |
+| `.1.3.6.1.4.1.99999.1.5` | Overpass Data Age | minutes | 1 |
+
+**Important settings:**
+- **Divisor: 1** - Prevents LibreNMS from scaling the values
+- **Unit:** Set the appropriate unit string (ms, minutes, etc.)
+
+### Why values show "M" suffix
+
+If LibreNMS shows values like "40M" instead of "40 ms", it's because:
+- LibreNMS applies SI prefix auto-scaling (k, M, G) by default
+- The Custom OID unit/divisor settings override this behavior
+
+### Installing the MIB in LibreNMS
+
+To use MIB names instead of numeric OIDs:
+
+```bash
+# Copy MIB to LibreNMS
+sudo cp OVERPASS-MIB.txt /opt/librenms/mibs/
+
+# Or download directly
+sudo curl -o /opt/librenms/mibs/OVERPASS-MIB.txt \
+  https://raw.githubusercontent.com/skeffling/overpass-snmp/main/OVERPASS-MIB.txt
+```
+
+Then in LibreNMS, you can reference OIDs by name (e.g., `OVERPASS-MIB::overpassLatency`).
+
 ## Troubleshooting
 
 ### Stats show "U" (unknown)
